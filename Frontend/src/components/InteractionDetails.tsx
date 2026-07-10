@@ -80,14 +80,14 @@ const InteractionDetails = () => {
   // ];
 
   return (
-    <div className="flex h-full flex-col rounded-3xl border border-[#E4E7EC] bg-white shadow-sm">
+    <div className="flex h-full w-full flex-col rounded-lg border border-[#E4E7EC] shadow-sm shadow-gray-900/50 bg-white">
       {/* Header */}
 
       <div className="px-6 lg:px-4 pt-4 pb-2">
         <h2 className="text-[22px] font-semibold">Interaction Details</h2>
       </div>
 
-      <div className="border-t border-[#EAECF0]" />
+      <div className="border-t border-gray-400" />
 
       {/* Body */}
 
@@ -96,7 +96,8 @@ const InteractionDetails = () => {
 flex-1
 min-h-0
 overflow-y-auto
-bg-gray-300
+bg-gray-100
+rounded-lg
 px-4
 py-5
 sm:px-6

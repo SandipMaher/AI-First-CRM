@@ -77,7 +77,7 @@ export default function AIAssistant() {
   };
 
   return (
-    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-[#EAECF0] bg-white shadow-sm">
+    <div className="flex h-full flex-col overflow-hidden rounded-lg border border-[#EAECF0] bg-white shadow-sm shadow-gray-900/50">
       {/* ================= Header ================= */}
       <div className="border-b border-[#F2F4F7] bg-white px-5 py-5 lg:px-6">
         <div className="flex items-start gap-3">

@@ -9,7 +9,7 @@ class InteractionCreate(BaseModel):
     interaction_type: str
     date: str
     time: str
-    attendees: str
+    attendees: list[str] 
     topics: str
     materials: list[str]
     samples: list[str]
@@ -43,7 +43,6 @@ class InteractionResponse(BaseModel):
 
     summary: Optional[str] = None
     sentiment: Optional[str] = None
-    confidence: int
     follow_up: Optional[str] = None
 
     created_at: datetime
