@@ -171,4 +171,10 @@ http://127.0.0.1:8000/docs
 ## Author
 
 **Sandip Maher**
+
+<img width="772" height="737" alt="image" src="https://github.com/user-attachments/assets/5fbf7aef-3c16-4ea4-a003-11896413c205" />
+
+<img width="749" height="733" alt="Screenshot 2026-07-10 at 5 41 18 PM" src="https://github.com/user-attachments/assets/309a51c6-dc7b-43bc-bfc3-97dfe37d7949" />
+
+
  
