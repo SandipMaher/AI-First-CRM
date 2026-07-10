@@ -1,0 +1,47 @@
+# ===========================
+# Frontend (React + Vite)
+# ===========================
+Frontend/node_modules/
+Frontend/dist/
+Frontend/.vite/
+Frontend/.env
+
+
+# ===========================
+# Backend (Python)
+# ===========================
+Backend/venv/
+Backend/.venv/
+Backend/.env
+Backend/__pycache__/
+Backend/**/*.pyc
+Backend/.pytest_cache/
+Backend/.mypy_cache/
+Backend/.coverage
+
+# ===========================
+# IDE
+# ===========================
+.vscode/
+.idea/
+
+# ===========================
+# Operating System
+# ===========================
+.DS_Store
+Thumbs.db
+
+# ===========================
+# Logs
+# ===========================
+*.log
+
+# ===========================
+# Misc
+# ===========================
+*.swp
+*.swo
+
+# Python cache
+**/__pycache__/
+**/*.py[cod]
