@@ -6,7 +6,7 @@ from app.core.config import settings
 # Create SQLAlchemy engine
 engine = create_engine(
     settings.DATABASE_URL,
-    echo=False,  # Set True while debugging SQL queries
+    echo=False, 
 )
 
 # Create database session

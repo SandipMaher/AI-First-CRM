@@ -28,14 +28,6 @@ export const assistantChat = async (message: string) => {
   return response.data;
 };
 
-// export const parseChatMessage = async (message: string) => {
-//   const response = await api.post("/interactions/chat-parse", {
-//     message,
-//   });
-
-//   return response.data;
-// };
-
 export const getInteractions = async () => {
   const response = await api.get("/interactions/");
   return response.data;

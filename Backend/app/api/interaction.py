@@ -30,16 +30,6 @@ router = APIRouter(
     tags=["Interactions"],
 )
 
-
-# @router.post("/", response_model=InteractionResponse)
-# def create(
-#     interaction: InteractionCreate,
-#     db: Session = Depends(get_db),
-# ):
-#     return create_interaction(db, interaction)
-
-
-
 @router.post("/", response_model=InteractionResponse)
 def create(
     interaction: InteractionCreate,

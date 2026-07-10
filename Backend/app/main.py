@@ -6,7 +6,6 @@ from app.api.assistant import router as assistant_router
 
 from app.core.database import Base, engine
 
-# Import models so SQLAlchemy knows about them
 from app.models.interaction import Interaction
 
 app = FastAPI(
