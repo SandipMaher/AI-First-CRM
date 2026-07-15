@@ -20,9 +20,25 @@ export const createInteraction = async (formData: any) => {
   return response.data;
 };
 
-export const assistantChat = async (message: string) => {
+export const assistantChat = async (
+  message: string,
+  currentForm: any
+) => {
   const response = await api.post("/assistant/chat", {
     message,
+    current_form: {
+      hcp_name: currentForm.hcpName,
+      interaction_type: currentForm.interactionType,
+      date: currentForm.date,
+      time: currentForm.time,
+      attendees: currentForm.attendees,
+      topics: currentForm.topics,
+      materials: currentForm.materials,
+      samples: currentForm.samples,
+      sentiment: currentForm.sentiment,
+      outcomes: currentForm.outcomes,
+      follow_up_actions: currentForm.followUpActions,
+    },
   });
 
   return response.data;

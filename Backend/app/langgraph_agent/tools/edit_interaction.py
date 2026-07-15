@@ -14,10 +14,24 @@ def edit_interaction(
     user_message: str,
 ) -> dict:
     """
-    Update only the modified interaction fields.
-    """
-   
+Use this tool ONLY when an interaction already exists
+and the user wants to modify it.
+
+Examples
+
+- change meeting time
+- add attendee
+- remove attendee
+- update topics
+- change HCP name
+
+Never use this tool for creating a new interaction.
+
+Returns ONLY the modified fields.
+"""
+
     print("✅ EDIT TOOL CALLED")
+
     chain = EDIT_INTERACTION_PROMPT | llm
 
     response = chain.invoke(
@@ -25,6 +39,7 @@ def edit_interaction(
             "current_form": json.dumps(
                 current_form,
                 indent=2,
+                ensure_ascii=False,
             ),
             "user_message": user_message,
         }
@@ -32,8 +47,13 @@ def edit_interaction(
 
     content = response.content.strip()
 
-    content = content.replace("```json", "")
-    content = content.replace("```", "")
-    content = content.strip()
+    if content.startswith("```"):
+        content = content.replace("```json", "")
+        content = content.replace("```", "").strip()
 
-    return json.loads(content)
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        print("Invalid JSON returned:")
+        print(content)
+        return {}

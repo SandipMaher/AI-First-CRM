@@ -16,7 +16,7 @@ interface AssistantState {
   suggestions: string[];
   summary: string;
   sentiment: string;
-  followUp: string;
+  followUp: string[];
 }
 
 const initialState: AssistantState = {
@@ -44,7 +44,7 @@ const initialState: AssistantState = {
 
   summary: "",
 sentiment: "",
-followUp: "",
+followUp: [],
 };
 
 const assistantSlice = createSlice({

@@ -12,6 +12,7 @@ export interface InteractionForm {
   sentiment: string;
   outcomes: string;
   followUpActions: string;
+  followUpSuggestions: string[];
 }
 
 interface InteractionState {
@@ -31,6 +32,7 @@ const initialState: InteractionState = {
     sentiment: "neutral",
     outcomes: "",
     followUpActions: "",
+    followUpSuggestions: [],
   },
 };
 
@@ -58,7 +60,7 @@ const interactionSlice = createSlice({
 
       state.formData.interactionType =
         action.payload.interaction_type || "Meeting";
-        console.log(state.formData.interactionType);
+      console.log(state.formData.interactionType);
 
       state.formData.date = action.payload.date || "";
 
@@ -84,6 +86,12 @@ const interactionSlice = createSlice({
       state.formData.outcomes = action.payload.outcomes || "";
 
       state.formData.followUpActions = action.payload.follow_up_actions || "";
+
+      state.formData.followUpSuggestions = Array.isArray(
+        action.payload.follow_up_suggestions,
+      )
+        ? action.payload.follow_up_suggestions
+        : [];
     },
 
     resetForm: (state) => {

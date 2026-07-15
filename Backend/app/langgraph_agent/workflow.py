@@ -16,6 +16,7 @@ class InteractionState(TypedDict):
     summary: str
     sentiment: str
     follow_up: str
+    follow_up_suggestions: list[str]
 
 
 def analyze_node(state: InteractionState):
@@ -29,10 +30,11 @@ def analyze_node(state: InteractionState):
     parsed = parse_ai_response(ai_response)
 
     return {
-        "summary": parsed["summary"],
-        "sentiment": parsed["sentiment"],
-        "follow_up": parsed["follow_up"],
-    }
+    "summary": parsed["summary"],
+    "sentiment": parsed["sentiment"],
+    "follow_up": parsed["follow_up"],
+    "follow_up_suggestions": parsed["follow_up_suggestions"],
+}
 
 
 builder = StateGraph(InteractionState)

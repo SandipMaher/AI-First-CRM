@@ -22,6 +22,8 @@ const InteractionDetails = () => {
 
   const formData = useAppSelector((state) => state.interaction.formData);
 
+  const { summary, sentiment } = useAppSelector((state) => state.assistant);
+
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -511,6 +513,35 @@ sm:gap-8
     "
             />
 
+            {summary && (
+              <div className="mt-4 rounded-lg border border-[#D0D5DD] bg-[#F9FAFB] p-4">
+                <h4 className="mb-2 text-sm font-semibold text-[#1570EF]">
+                  AI Interaction Summary
+                </h4>
+
+                <p className="text-sm leading-6 text-[#475467]">{summary}</p>
+
+                <div className="mt-3">
+                  <span className="mr-2 text-sm font-medium text-[#344054]">
+                    Sentiment:
+                  </span>
+
+                  <span
+                    className={`inline-flex rounded-full px-3 py-1 text-xs font-semibold
+          ${
+            sentiment === "Positive"
+              ? "bg-green-100 text-green-700"
+              : sentiment === "Negative"
+                ? "bg-red-100 text-red-700"
+                : "bg-yellow-100 text-yellow-700"
+          }`}
+                  >
+                    {sentiment}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {/* AI Suggestions */}
 
             <div className="mt-2 flex flex-col gap-2">
@@ -518,26 +549,31 @@ sm:gap-8
                 AI Suggested Follow-ups:
               </p>
 
-              <button
-                type="button"
-                className="w-fit text-left text-sm text-[#2563EB] hover:underline"
-              >
-                + Schedule follow-up meeting in 2 weeks
-              </button>
-
-              <button
-                type="button"
-                className="w-fit text-left text-sm text-[#2563EB] hover:underline"
-              >
-                + Send OncoBoost Phase III PDF
-              </button>
-
-              <button
-                type="button"
-                className="w-fit text-left text-sm text-[#2563EB] hover:underline"
-              >
-                + Add Dr. Sharma to advisory board invite list
-              </button>
+              {formData.followUpSuggestions.length > 0 ? (
+                formData.followUpSuggestions.map((suggestion, index) => (
+                  <button
+                    key={index}
+                    type="button"
+                    onClick={() =>
+                      dispatch(
+                        updateField({
+                          field: "followUpActions",
+                          value: formData.followUpActions
+                            ? `${formData.followUpActions}\n${suggestion}`
+                            : suggestion,
+                        }),
+                      )
+                    }
+                    className="w-fit text-left text-sm text-[#2563EB] hover:underline"
+                  >
+                    + {suggestion}
+                  </button>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">
+                  No suggestions available.
+                </p>
+              )}
             </div>
           </div>
 

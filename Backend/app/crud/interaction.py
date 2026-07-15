@@ -13,36 +13,46 @@ def create_interaction(
 ) -> Interaction:
 
     notes = f"""
-Date: {interaction.date}
-Time: {interaction.time}
+    Date: {interaction.date}
 
-Attendees:
-{interaction.attendees}
+    Time: {interaction.time}
 
-Topics:
-{interaction.topics}
+    Attendees:
+    {", ".join(interaction.attendees or [])}
 
-Materials:
-{", ".join(interaction.materials)}
+    Topics:
+    {interaction.topics or ""}
 
-Samples:
-{", ".join(interaction.samples)}
+    Materials:
+    {", ".join(interaction.materials or [])}
 
-Sentiment:
-{interaction.sentiment}
+    Samples:
+    {", ".join(interaction.samples or [])}
 
-Outcomes:
-{interaction.outcomes}
+    Outcomes:
+    {interaction.outcomes or ""}
 
-Follow-up Actions:
-{interaction.follow_up_actions}
-"""
-
+    Follow-up Actions:
+    {interaction.follow_up_actions or ""}
+    """.strip()
+   
     db_interaction = Interaction(
-        hcp_name=interaction.hcp_name,
-        interaction_type=interaction.interaction_type,
-        notes=notes,
-    )
+    hcp_name=interaction.hcp_name,
+    interaction_type=interaction.interaction_type,
+
+    date=interaction.date,
+    time=interaction.time,
+
+    attendees=interaction.attendees,
+    topics=interaction.topics,
+
+    materials=interaction.materials,
+    samples=interaction.samples,
+
+    outcomes=interaction.outcomes,
+    follow_up_actions=interaction.follow_up_actions,
+    notes=notes, 
+)
 
     db.add(db_interaction)
     db.commit()

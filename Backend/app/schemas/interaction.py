@@ -7,15 +7,21 @@ from pydantic import BaseModel, ConfigDict
 class InteractionCreate(BaseModel):
     hcp_name: str
     interaction_type: str
-    date: str
-    time: str
-    attendees: list[str] 
-    topics: str
-    materials: list[str]
-    samples: list[str]
-    sentiment: str
-    outcomes: str
-    follow_up_actions: str
+    date: Optional[str] = None
+    time: Optional[str] = None
+
+    attendees: Optional[list[str]] = None
+    topics: Optional[str] = None
+
+    materials: Optional[list[str]] = None
+    samples: Optional[list[str]] = None
+
+    sentiment: Optional[str] = None
+
+    outcomes: Optional[str] = None
+    follow_up_actions: Optional[str] = None
+    follow_up_suggestions: list[str] = []
+    summary: str = ""
 
 
 class InteractionUpdate(BaseModel):
@@ -30,20 +36,33 @@ class InteractionUpdate(BaseModel):
     sentiment: Optional[str] = None
     outcomes: Optional[str] = None
     follow_up_actions: Optional[str] = None
-
+    follow_up_suggestions: Optional[list[str]] = None
     summary: Optional[str] = None
     follow_up: Optional[str] = None
+    
 
 class InteractionResponse(BaseModel):
     id: int
 
     hcp_name: str
     interaction_type: str
-    notes: str
+
+    date: Optional[str] = None
+    time: Optional[str] = None
+
+    attendees: Optional[list[str]] = None
+    topics: Optional[str] = None
+
+    materials: Optional[list[str]] = None
+    samples: Optional[list[str]] = None
+
+    sentiment: Optional[str] = None
+    outcomes: Optional[str] = None
+
+    follow_up_actions: Optional[str] = None
+    follow_up_suggestions: list[str] = []
 
     summary: Optional[str] = None
-    sentiment: Optional[str] = None
-    follow_up: Optional[str] = None
 
     created_at: datetime
 

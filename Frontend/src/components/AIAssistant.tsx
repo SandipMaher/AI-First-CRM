@@ -8,6 +8,7 @@ import {
   addUserMessage,
   addAssistantMessage,
   setLoading,
+  setAIResponse,
 } from "../redux/assistantSlice";
 
 export default function AIAssistant() {
@@ -22,6 +23,10 @@ export default function AIAssistant() {
     sentiment,
     followUp,
   } = useAppSelector((state) => state.assistant);
+
+  const formData = useAppSelector(
+  (state) => state.interaction.formData
+);
 
   // const handleLog = () => {
   //   if (!currentInput.trim()) return;
@@ -49,8 +54,18 @@ export default function AIAssistant() {
 
     try {
       // Call backend AI parser
-      const parsedData = await assistantChat(currentInput);
+const parsedData = await assistantChat(
+  currentInput,
+  formData
+);
 
+dispatch(
+  setAIResponse({
+    summary: parsedData.summary,
+    sentiment: parsedData.sentiment,
+    followUp: parsedData.follow_up,
+  })
+);
       // Fill interaction form automatically
       dispatch(fillFormFromAI(parsedData));
 
@@ -112,7 +127,7 @@ export default function AIAssistant() {
             </p>
           </div>
 
-          {summary && (
+          {/* {summary && (
             <div className="rounded-2xl border border-[#D0D5DD] bg-[#F9FAFB] p-5 shadow-sm">
               <h3 className="mb-4 text-lg font-semibold text-[#1570EF]">
                 AI Interaction Analysis
@@ -143,7 +158,7 @@ export default function AIAssistant() {
                 </div>
               </div>
             </div>
-          )}
+          )} */}
 
           {/* User Bubble */}
           {/* <div className="mr-auto max-w-[98%] rounded-2xl border-l-4 border-[#1570EF] bg-[#F2F4F7] p-5 shadow-sm">

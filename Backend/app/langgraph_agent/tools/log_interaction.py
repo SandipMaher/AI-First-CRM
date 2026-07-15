@@ -13,6 +13,11 @@ def log_interaction(user_message: str) -> dict:
     """
     Extract interaction details from a natural language conversation
     and return structured JSON for auto-filling the interaction form.
+
+    Use ONLY when creating a NEW interaction.
+
+    Never use this tool for editing.
+  
     """
    
     print("✅ LOG_INTERACTION TOOL CALLED")

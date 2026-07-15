@@ -9,7 +9,7 @@ from app.langgraph_agent.prompts import (
 
 
 @tool
-def followup_tool(interaction: dict) -> list:
+def followup_tool(interaction: dict) -> dict:
     """
     Generate AI follow-up recommendations.
     """

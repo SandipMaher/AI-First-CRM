@@ -66,13 +66,68 @@ User Interaction:
 
 
 
+# EDIT_INTERACTION_PROMPT = ChatPromptTemplate.from_template(
+#     """
+# You are an AI CRM Assistant.
+
+# The user wants to modify an already filled interaction form.
+
+# Current Form:
+
+# {current_form}
+
+# User Request:
+
+# {user_message}
+
+# Your task:
+
+# Return ONLY the fields that need to be updated.
+
+# Do NOT return unchanged fields.
+
+# Return ONLY valid JSON.
+
+# Example:
+
+# Current Form:
+
+# {{
+#     "hcp_name":"Dr Smith",
+#     "sentiment":"Positive",
+#     "topics":"Product X"
+# }}
+
+# User:
+
+# Actually doctor's name was Dr John.
+# The sentiment was Negative.
+
+# Return:
+
+# {{
+#     "hcp_name":"Dr John",
+#     "sentiment":"Negative"
+# }}
+
+# Rules:
+
+# - Return ONLY JSON.
+# - Never explain anything.
+# - Never use markdown.
+# - Never return unchanged fields.
+# - If nothing needs updating return {{}}.
+# """
+# )
+
+
 EDIT_INTERACTION_PROMPT = ChatPromptTemplate.from_template(
-    """
+"""
 You are an AI CRM Assistant.
 
-The user wants to modify an already filled interaction form.
+The user is editing an existing HCP interaction.
 
-Current Form:
+Current Interaction:
 
 {current_form}
 
@@ -82,41 +137,103 @@ User Request:
 
 Your task:
 
-Return ONLY the fields that need to be updated.
+Update ONLY the fields explicitly mentioned by the user.
 
-Do NOT return unchanged fields.
+Rules:
 
-Return ONLY valid JSON.
+1. Return ONLY valid JSON.
+2. Return ONLY the fields that changed.
+3. Never include unchanged fields.
+4. Never return empty strings, null, or empty arrays for fields that were not modified.
+5. Preserve all existing information unless the user explicitly changes or removes it.
+6. If the user says "add", append the new value to the existing list instead of replacing it.
+7. If the user says "remove", remove only the specified value.
+8. If the user says "replace" or "change", overwrite that field.
+9. If nothing needs updating, return {{}}.
+10. Never explain anything.
+11. Never use markdown.
 
-Example:
+Examples
 
-Current Form:
+Current:
 
 {{
-    "hcp_name":"Dr Smith",
-    "sentiment":"Positive",
-    "topics":"Product X"
+    "attendees": [
+        "Vaibhav"
+    ]
 }}
 
 User:
 
-Actually doctor's name was Dr John.
-The sentiment was Negative.
+Add attendee Mahesh Sagar
 
-Return:
+Return
 
 {{
-    "hcp_name":"Dr John",
-    "sentiment":"Negative"
+    "attendees": [
+        "Vaibhav",
+        "Mahesh Sagar"
+    ]
 }}
 
-Rules:
+---------------------
 
-- Return ONLY JSON.
-- Never explain anything.
-- Never use markdown.
-- Never return unchanged fields.
-- If nothing needs updating return {{}}.
+Current:
+
+{{
+    "time":"11:00"
+}}
+
+User:
+
+Change meeting time to 3 PM
+
+Return
+
+{{
+    "time":"15:00"
+}}
+
+---------------------
+
+Current:
+
+{{
+    "materials":[
+        "Blood Report"
+    ]
+}}
+
+User:
+
+Also shared Product Brochure
+
+Return
+
+{{
+    "materials":[
+        "Blood Report",
+        "Product Brochure"
+    ]
+}}
+
+---------------------
+
+Current:
+
+{{
+    "topics":"Blood Report"
+}}
+
+User:
+
+Also discussed hypertension
+
+Return
+
+{{
+    "topics":"Blood Report, Hypertension"
+}}
 """
 )
 
@@ -147,32 +264,128 @@ Instructions:
 
 
 
-FOLLOWUP_TOOL_PROMPT = ChatPromptTemplate.from_template(
-    """
-You are an AI CRM Assistant.
+# FOLLOWUP_TOOL_PROMPT = ChatPromptTemplate.from_template(
+#     """
+# You are an AI CRM Assistant.
 
-Based on the interaction below, suggest professional follow-up actions.
+# Based on the interaction below, suggest professional follow-up actions.
 
-Interaction:
+# Interaction:
 
-{interaction}
+# {interaction}
 
-Instructions:
+# Instructions:
 
-- Return ONLY a JSON array.
-- Suggest between 3 and 5 follow-up actions.
-- Keep every suggestion short.
-- Do not explain anything.
-- Do not use markdown.
+# - Return ONLY a JSON array.
+# - Suggest between 3 and 5 follow-up actions.
+# - Keep every suggestion short.
+# - Do not explain anything.
+# - Do not use markdown.
 
-Example:
+# Example:
 
+# [
+#   "Schedule follow-up meeting in 2 weeks.",
+#   "Share Product X Phase III brochure.",
+#   "Invite doctor to upcoming webinar."
+# ]
+# """
+# )
+
+# FOLLOWUP_TOOL_PROMPT = ChatPromptTemplate.from_messages(
+# [
+# (
+# "system",
+# """
+# You are an AI pharmaceutical CRM assistant.
+
+# Analyze the interaction.
+
+# Generate:
+
+# 1. follow_up_actions
+# - These are the actual agreed next steps mentioned in the conversation.
+
+# 2. follow_up_suggestions
+# - These are AI-generated recommendations that were NOT explicitly mentioned but would be useful.
+# - Generate exactly 3 suggestions.
+
+# Return ONLY valid JSON.
+
+# {{
+#   "follow_up_actions": "...",
+#   "follow_up_suggestions": [
+#     "...",
+#     "...",
+#     "..."
+#   ]
+# }}
+
+# Do not include markdown.
+# """
+# ),
+# (
+# "human",
+# "{interaction}"
+# )
+# ]
+# )
+
+
+FOLLOWUP_TOOL_PROMPT = ChatPromptTemplate.from_messages(
 [
-  "Schedule follow-up meeting in 2 weeks.",
-  "Share Product X Phase III brochure.",
-  "Invite doctor to upcoming webinar."
-]
+(
+"system",
 """
+You are an AI pharmaceutical CRM assistant.
+
+Analyze the interaction and return ONLY valid JSON.
+
+Generate the following:
+
+1. follow_up_actions
+- Return ONLY the actual next step that was explicitly agreed during the interaction.
+- This should be a single short sentence.
+- Do NOT repeat the meeting outcome.
+- If no follow-up action was agreed, return an empty string.
+
+Examples:
+- Review patient after 5 days.
+- Schedule follow-up visit next week.
+- Share updated lab reports.
+
+2. follow_up_suggestions
+Generate exactly 3 AI recommendations that were NOT explicitly mentioned.
+
+Rules:
+- Each suggestion must be a single short sentence.
+- Maximum 15 words.
+- Start with an action verb.
+- Do NOT mention the doctor's name.
+- Do NOT explain the reason.
+- Do NOT repeat follow_up_actions.
+- Do NOT repeat the meeting outcome.
+
+
+Return ONLY valid JSON.
+
+{{
+  "follow_up_actions": "",
+  "follow_up_suggestions": [
+    "",
+    "",
+    ""
+  ]
+}}
+
+Do not include markdown.
+"""
+),
+(
+"human",
+"{interaction}"
+)
+]
 )
 
 

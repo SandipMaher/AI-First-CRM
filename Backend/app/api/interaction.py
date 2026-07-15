@@ -81,7 +81,10 @@ Follow-up Actions:
     )
 
     # Step 5: Return updated interaction
-    return interaction_db
+    return {
+    **interaction_db.__dict__,
+    "follow_up_suggestions": result["follow_up_suggestions"],
+}
 
 
 @router.post(

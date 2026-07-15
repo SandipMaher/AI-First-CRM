@@ -27,16 +27,24 @@ Interaction Type:
 Notes:
 {notes}
 
-Return ONLY this format:
+Return ONLY valid JSON.
 
-Summary:
-<summary>
+{{
+    "summary":"",
+    "sentiment":"Positive | Neutral | Negative",
+    "follow_up":"",
+    "follow_up_suggestions":[
+        "",
+        "",
+        ""
+    ]
+}}
+Rules:
 
-Sentiment:
-Positive | Neutral | Negative
-
-Follow Up:
-<follow-up recommendation>
+- follow_up = actual agreed next step from the meeting.
+- follow_up_suggestions = exactly 3 AI recommendations that were NOT explicitly mentioned.
+- Return ONLY JSON.
+- No markdown.
 """
 )
 
@@ -87,6 +95,25 @@ Interaction:
 )
 
 
+# def analyze_interaction(
+#     hcp_name: str,
+#     interaction_type: str,
+#     notes: str,
+# ):
+#     chain = prompt | llm
+
+#     response = chain.invoke(
+#         {
+#             "hcp_name": hcp_name,
+#             "interaction_type": interaction_type,
+#             "notes": notes,
+#         }
+#     )
+
+#     return response.content
+
+
+
 def analyze_interaction(
     hcp_name: str,
     interaction_type: str,
@@ -102,39 +129,60 @@ def analyze_interaction(
         }
     )
 
-    return response.content
+    content = response.content.strip()
+
+    content = content.replace("```json", "")
+    content = content.replace("```", "")
+    content = content.strip()
+
+    try:
+        return json.loads(content)
+    except json.JSONDecodeError:
+        print("Invalid AI Response:")
+        print(content)
+        raise
 
 
-def parse_ai_response(response: str):
-    data = {
-        "summary": "",
-        "sentiment": "",
-        "follow_up": "",
+# def parse_ai_response(response: str):
+#     data = {
+#         "summary": "",
+#         "sentiment": "",
+#         "follow_up": "",
+#     }
+
+#     current_field = None
+
+#     for line in response.splitlines():
+#         line = line.strip()
+
+#         if line.startswith("Summary:"):
+#             current_field = "summary"
+#             data["summary"] = line.replace("Summary:", "").strip()
+
+#         elif line.startswith("Sentiment:"):
+#             current_field = "sentiment"
+#             data["sentiment"] = line.replace("Sentiment:", "").strip()
+
+#         elif line.startswith("Follow Up:"):
+#             current_field = "follow_up"
+#             data["follow_up"] = line.replace("Follow Up:", "").strip()
+
+#         elif current_field and line:
+#             data[current_field] += " " + line
+
+#     return data
+
+
+def parse_ai_response(response: dict):
+    return {
+        "summary": response.get("summary", ""),
+        "sentiment": response.get("sentiment", ""),
+        "follow_up": response.get("follow_up", ""),
+        "follow_up_suggestions": response.get(
+            "follow_up_suggestions",
+            [],
+        ),
     }
-
-    current_field = None
-
-    for line in response.splitlines():
-        line = line.strip()
-
-        if line.startswith("Summary:"):
-            current_field = "summary"
-            data["summary"] = line.replace("Summary:", "").strip()
-
-        elif line.startswith("Sentiment:"):
-            current_field = "sentiment"
-            data["sentiment"] = line.replace("Sentiment:", "").strip()
-
-        elif line.startswith("Follow Up:"):
-            current_field = "follow_up"
-            data["follow_up"] = line.replace("Follow Up:", "").strip()
-
-        elif current_field and line:
-            data[current_field] += " " + line
-
-    return data
-
-
 
 def parse_chat_message(message: str):
     now = datetime.now()
